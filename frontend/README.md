@@ -103,7 +103,7 @@ You'll also need an agent to speak with. Try our starter agent for [Python](http
 
 ## Configuration
 
-This starter is designed to be flexible so you can adapt it to your specific agent use case. You can easily configure it to work with different types of inputs and outputs:
+This starter is configured as a voice-first app. You can still tune the chat and visualizer behavior:
 
 #### Example: App configuration (`app-config.ts`)
 
@@ -114,8 +114,6 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   pageDescription: 'A voice agent built with LiveKit',
 
   supportsChatInput: true,
-  supportsVideoInput: true,
-  supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
   logo: '/lk-logo.svg',

@@ -53,8 +53,6 @@ export function ViewController({ appConfig }: ViewControllerProps) {
           key="session-view"
           {...VIEW_MOTION_PROPS}
           supportsChatInput={appConfig.supportsChatInput}
-          supportsVideoInput={appConfig.supportsVideoInput}
-          supportsScreenShare={appConfig.supportsScreenShare}
           isPreConnectBufferEnabled={appConfig.isPreConnectBufferEnabled}
           audioVisualizerType={appConfig.audioVisualizerType}
           audioVisualizerColor={

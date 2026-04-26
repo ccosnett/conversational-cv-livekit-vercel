@@ -7,10 +7,7 @@ import { type MotionProps, motion } from 'motion/react';
 import { useChat } from '@livekit/components-react';
 import { AgentDisconnectButton } from '@/components/agents-ui/agent-disconnect-button';
 import { AgentTrackControl } from '@/components/agents-ui/agent-track-control';
-import {
-  AgentTrackToggle,
-  agentTrackToggleVariants,
-} from '@/components/agents-ui/agent-track-toggle';
+import { agentTrackToggleVariants } from '@/components/agents-ui/agent-track-toggle';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
 import {
@@ -143,23 +140,11 @@ export interface AgentControlBarControls {
    */
   leave?: boolean;
   /**
-   * Whether to show the camera toggle control.
-   *
-   * @defaultValue true (if camera publish permission is granted)
-   */
-  camera?: boolean;
-  /**
    * Whether to show the microphone toggle control.
    *
    * @defaultValue true (if microphone publish permission is granted)
    */
   microphone?: boolean;
-  /**
-   * Whether to show the screen share toggle control.
-   *
-   * @defaultValue true (if screen share publish permission is granted)
-   */
-  screenShare?: boolean;
   /**
    * Whether to show the chat toggle control.
    *
@@ -176,15 +161,13 @@ export interface AgentControlBarProps extends UseInputControlsProps {
    */
   variant?: 'default' | 'outline' | 'livekit';
   /**
-   * This takes an object with the following keys: `leave`, `microphone`, `screenShare`, `camera`,
-   * `chat`. Each key maps to a boolean value that determines whether the control is displayed.
+   * This takes an object with the following keys: `leave`, `microphone`, `chat`.
+   * Each key maps to a boolean value that determines whether the control is displayed.
    *
    * @default
    * {
    *   leave: true,
    *   microphone: true,
-   *   screenShare: true,
-   *   camera: true,
    *   chat: true,
    * }
    */
@@ -217,8 +200,8 @@ export interface AgentControlBarProps extends UseInputControlsProps {
 
 /**
  * A control bar specifically designed for voice assistant interfaces. Provides controls for
- * microphone, camera, screen share, chat, and disconnect. Includes an expandable chat input for
- * text-based interaction with the agent.
+ * microphone, chat, and disconnect. Includes an expandable chat input for text-based interaction
+ * with the agent.
  *
  * @example
  *
@@ -229,8 +212,6 @@ export interface AgentControlBarProps extends UseInputControlsProps {
  *   onDisconnect={() => handleDisconnect()}
  *   controls={{
  *     microphone: true,
- *     camera: true,
- *     screenShare: false,
  *     chat: true,
  *     leave: true,
  *   }}
@@ -256,13 +237,9 @@ export function AgentControlBar({
   const [isChatOpenUncontrolled, setIsChatOpenUncontrolled] = useState(isChatOpen);
   const {
     microphoneTrack,
-    cameraToggle,
     microphoneToggle,
-    screenShareToggle,
     handleAudioDeviceChange,
-    handleVideoDeviceChange,
     handleMicrophoneDeviceSelectError,
-    handleCameraDeviceSelectError,
   } = useInputControls({ onDeviceError, saveUserChoices });
 
   const handleSendMessage = async (message: string) => {
@@ -272,8 +249,6 @@ export function AgentControlBar({
   const visibleControls = {
     leave: controls?.leave ?? true,
     microphone: controls?.microphone ?? publishPermissions.microphone,
-    screenShare: controls?.screenShare ?? publishPermissions.screenShare,
-    camera: controls?.camera ?? publishPermissions.camera,
     chat: controls?.chat ?? publishPermissions.data,
   };
 
@@ -328,41 +303,6 @@ export function AgentControlBar({
                   'rounded-full [&_button:first-child]:rounded-l-full [&_button:last-child]:rounded-r-full',
                 ]
               )}
-            />
-          )}
-
-          {/* Toggle Camera */}
-          {visibleControls.camera && (
-            <AgentTrackControl
-              variant={variant === 'outline' ? 'outline' : 'default'}
-              kind="videoinput"
-              aria-label="Toggle camera"
-              source={Track.Source.Camera}
-              pressed={cameraToggle.enabled}
-              pending={cameraToggle.pending}
-              disabled={cameraToggle.pending}
-              onPressedChange={cameraToggle.toggle}
-              onMediaDeviceError={handleCameraDeviceSelectError}
-              onActiveDeviceChange={handleVideoDeviceChange}
-              className={cn(
-                variant === 'livekit' && [
-                  LK_TOGGLE_VARIANT_1,
-                  'rounded-full [&_button:first-child]:rounded-l-full [&_button:last-child]:rounded-r-full',
-                ]
-              )}
-            />
-          )}
-
-          {/* Toggle Screen Share */}
-          {visibleControls.screenShare && (
-            <AgentTrackToggle
-              variant={variant === 'outline' ? 'outline' : 'default'}
-              aria-label="Toggle screen share"
-              source={Track.Source.ScreenShare}
-              pressed={screenShareToggle.enabled}
-              disabled={screenShareToggle.pending}
-              onPressedChange={screenShareToggle.toggle}
-              className={cn(variant === 'livekit' && [LK_TOGGLE_VARIANT_2, 'rounded-full'])}
             />
           )}
 

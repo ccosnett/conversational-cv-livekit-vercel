@@ -4,8 +4,6 @@ export interface AppConfig {
   companyName: string;
 
   supportsChatInput: boolean;
-  supportsVideoInput: boolean;
-  supportsScreenShare: boolean;
   isPreConnectBufferEnabled: boolean;
 
   logo: string;
@@ -35,8 +33,6 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   pageDescription: 'A voice agent built with LiveKit',
 
   supportsChatInput: true,
-  supportsVideoInput: true,
-  supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
   logo: '/lk-logo.svg',
