@@ -132,6 +132,25 @@ Get started quickly with our pre-built frontend starter apps, or add telephony s
 
 For advanced customization, see the [complete frontend guide](https://docs.livekit.io/frontends/).
 
+## Frontend previews on Vercel
+
+This repo includes a Next.js frontend in [`frontend/`](./frontend) and a Python LiveKit agent at the repository root. If you want standard Vercel previews from GitHub, import this repository as a Vercel project with the **Root Directory** set to `frontend`.
+
+The frontend now includes [`frontend/vercel.json`](./frontend/vercel.json), which pins the Vercel framework preset to `nextjs`. That keeps Git-based deployments using the standard Next.js build/runtime instead of the generic `Other` preset.
+
+With Git integration enabled in Vercel, you do **not** need a custom GitHub Actions deploy workflow for previews:
+
+- pushes to `main` create production deployments
+- pushes to any other branch create preview deployments
+- pull requests get Vercel preview URLs automatically
+
+Set these environment variables in Vercel for both **Preview** and **Production** if you want the deployed frontend to create LiveKit tokens:
+
+- `LIVEKIT_API_KEY`
+- `LIVEKIT_API_SECRET`
+- `LIVEKIT_URL`
+- `AGENT_NAME` if you use explicit agent dispatch
+
 ## Tests and evals
 
 This project includes a complete suite of evals, based on the LiveKit Agents [testing & evaluation framework](https://docs.livekit.io/agents/start/testing/). To run them, use `pytest`.

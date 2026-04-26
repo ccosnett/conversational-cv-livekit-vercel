@@ -33,3 +33,4 @@ frontend/node_modules
 
 # GitHub CLI
 .github/personal-instructions.md
+.vercel
