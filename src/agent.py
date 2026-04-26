@@ -66,6 +66,11 @@ async def my_agent(ctx: JobContext):
         "room": ctx.room.name,
     }
 
+    # Connect first so the session can bind to the actual remote participant
+    # instead of racing and selecting the agent itself as the linked participant.
+    await ctx.connect()
+    participant = await ctx.wait_for_participant()
+
     # Set up a voice AI pipeline using OpenAI, Cartesia, Deepgram, and the LiveKit turn detector
     session = AgentSession(
         # Speech-to-text (STT) is your agent's ears, turning the user's speech into text that the LLM can understand
@@ -111,6 +116,7 @@ async def my_agent(ctx: JobContext):
         agent=Assistant(),
         room=ctx.room,
         room_options=room_io.RoomOptions(
+            participant_identity=participant.identity,
             audio_input=room_io.AudioInputOptions(
                 noise_cancellation=ai_coustics.audio_enhancement(
                     model=ai_coustics.EnhancerModel.QUAIL_VF_L
@@ -118,9 +124,6 @@ async def my_agent(ctx: JobContext):
             ),
         ),
     )
-
-    # Join the room and connect to the user
-    await ctx.connect()
 
 
 if __name__ == "__main__":
