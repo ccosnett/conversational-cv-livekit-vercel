@@ -46,7 +46,7 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   startButtonText: 'Start call',
 
   // optional: audio visualization configuration
-  // audioVisualizerType: 'bar',
+  audioVisualizerType: 'wave',
   // audioVisualizerColor: '#002cf2',
   // audioVisualizerColorDark: '#1fd5f9',
   // audioVisualizerColorShift: 0.3,
