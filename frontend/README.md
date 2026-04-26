@@ -84,11 +84,6 @@ pnpm dlx shadcn@latest add @agents-ui/{component-name-a} @agents-ui/{component-n
 
 ## Getting started
 
-> [!TIP]
-> If you'd like to try this application without modification, you can deploy an instance in just a few clicks with [LiveKit Cloud Sandbox](https://cloud.livekit.io/projects/p_/sandbox/templates/agent-starter-react).
-
-[![Open on LiveKit](https://img.shields.io/badge/Open%20on%20LiveKit%20Cloud-002CF2?style=for-the-badge&logo=external-link)](https://cloud.livekit.io/projects/p_/sandbox/templates/agent-starter-react)
-
 Run the following command to automatically clone this template.
 
 ```bash
@@ -148,8 +143,6 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   // agent dispatch configuration
   agentName: undefined,
 
-  // LiveKit Cloud Sandbox configuration
-  sandboxId: undefined,
 };
 ```
 
@@ -167,10 +160,6 @@ Set `audioVisualizerType` in [`app-config.ts`](./app-config.ts) to switch visual
 
 Use `audioVisualizerColor` to set a shared accent color across all visualizer modes.
 
-> [!NOTE]
-> The `sandboxId` is for the LiveKit Cloud Sandbox environment.
-> It is not used for local development.
-
 #### Environment Variables
 
 You'll also need to configure your LiveKit credentials in `.env.local` (copy `.env.example` if you don't have one):
@@ -181,9 +170,8 @@ LIVEKIT_API_SECRET=your_livekit_api_secret
 LIVEKIT_URL=https://your-livekit-server-url
 
 # Agent dispatch (https://docs.livekit.io/agents/server/agent-dispatch)
-# Leave AGENT_NAME blank to enable automatic dispatch
-# Provide an agent name to enable explicit dispatch
-AGENT_NAME=
+# Set the deployed agent name used by this frontend
+AGENT_NAME=livekit-agent-minimal
 ```
 
 These are required for the voice agent functionality to work with your LiveKit project.

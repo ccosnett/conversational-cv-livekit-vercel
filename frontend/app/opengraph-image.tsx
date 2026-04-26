@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import { ImageResponse } from 'next/og';
 import getImageSize from 'buffer-image-size';
 import mime from 'mime';
@@ -102,8 +101,7 @@ export const contentType = 'image/png';
 
 // Image generation
 export default async function Image() {
-  const hdrs = await headers();
-  const appConfig = await getAppConfig(hdrs);
+  const appConfig = await getAppConfig();
 
   const pageTitle = cleanPageTitle(appConfig.pageTitle);
   const logoUri = appConfig.logoDark || appConfig.logo;
@@ -199,7 +197,7 @@ export default async function Image() {
               backgroundColor: '#1F1F1F',
               padding: '2px 8px',
               borderRadius: 4,
-              width: 72,
+              width: 96,
               fontSize: 12,
               fontFamily: 'CommitMono',
               fontWeight: 600,
@@ -207,7 +205,7 @@ export default async function Image() {
               letterSpacing: 0.8,
             }}
           >
-            SANDBOX
+            LIVEKIT
           </div>
           <div
             style={{

@@ -11,7 +11,6 @@ import { ViewController } from '@/components/app/view-controller';
 import { Toaster } from '@/components/ui/sonner';
 import { useAgentErrors } from '@/hooks/useAgentErrors';
 import { useDebugMode } from '@/hooks/useDebug';
-import { getSandboxTokenSource } from '@/lib/utils';
 
 const IN_DEVELOPMENT = process.env.NODE_ENV !== 'production';
 
@@ -29,10 +28,6 @@ interface AppProps {
 export function App({ appConfig }: AppProps) {
   const sessionSeed = useMemo(() => crypto.randomUUID(), []);
   const tokenSource = useMemo(() => {
-    if (typeof process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT === 'string') {
-      return getSandboxTokenSource(appConfig);
-    }
-
     return TokenSource.custom(async (options) => {
       const roomConfig = options.agentName
         ? {
@@ -67,7 +62,7 @@ export function App({ appConfig }: AppProps) {
 
       return await res.json();
     });
-  }, [appConfig, sessionSeed]);
+  }, [sessionSeed]);
 
   const session = useSession(
     tokenSource,
