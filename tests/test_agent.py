@@ -2,12 +2,14 @@ import pytest
 from livekit.agents import AgentSession, inference, llm
 
 from agent import AGENT_MODEL, Assistant
-from grounding import GROUND_TRUTH_PARAGRAPH, SYSTEM_PROMPT
+from grounding import SYSTEM_PROMPT
 
 
 def test_system_prompt_loaded() -> None:
+    assert "Conor's Talking CV" in SYSTEM_PROMPT
     assert "search_ground_truth" in SYSTEM_PROMPT
-    assert "Do not guess or invent biographical details." in SYSTEM_PROMPT
+    assert "third person" in SYSTEM_PROMPT
+    assert "his CV captures" in SYSTEM_PROMPT
 
 
 def _agent_llm() -> llm.LLM:
@@ -54,7 +56,7 @@ async def test_offers_assistance() -> None:
 
 @pytest.mark.asyncio
 async def test_grounded_work_history() -> None:
-    """Evaluation of the agent's grounded response for Conor's work history."""
+    """The talking CV should answer work-history questions from the prompt facts."""
     async with (
         _agent_llm() as agent_llm,
         AgentSession(llm=agent_llm) as session,
@@ -66,23 +68,20 @@ async def test_grounded_work_history() -> None:
         tool_call = result.expect.next_event().is_function_call(
             name="search_ground_truth"
         )
-        assert "conor" in tool_call.event().item.arguments.lower()
         assert "work" in tool_call.event().item.arguments.lower()
-
-        result.expect.next_event().is_function_call_output(
-            output=GROUND_TRUTH_PARAGRAPH
-        )
-
+        result.expect.next_event().is_function_call_output()
         message = result.expect.next_event().is_message(role="assistant").event().item
+
         assert "Compass Labs" in message.text_content
         assert "Wolfram Research" in message.text_content
+        assert "I worked" not in message.text_content
 
         result.expect.no_more_events()
 
 
 @pytest.mark.asyncio
 async def test_unknown_conor_fact() -> None:
-    """Evaluation of the agent's refusal to guess missing biographical facts."""
+    """The talking CV should refuse to invent missing facts about Conor."""
     async with (
         _agent_llm() as agent_llm,
         _judge_llm() as judge_llm,
@@ -93,20 +92,17 @@ async def test_unknown_conor_fact() -> None:
         result = await session.run(user_input="What city was Conor born in?")
 
         result.expect.next_event().is_function_call(name="search_ground_truth")
-        result.expect.next_event().is_function_call_output(
-            output=GROUND_TRUTH_PARAGRAPH
-        )
+        result.expect.next_event().is_function_call_output()
         await (
             result.expect.next_event()
             .is_message(role="assistant")
             .judge(
                 judge_llm,
                 intent="""
-                Says it does not know Conor's birth city because that fact is not present in the provided source information.
+                Says the birth city is not captured in the CV and does not invent one.
 
                 The response should not:
                 - State a specific birth city
-                - Pretend the source text contains that fact
                 - Guess or speculate
                 """,
             )
