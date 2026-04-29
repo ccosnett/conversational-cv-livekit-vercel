@@ -1,7 +1,7 @@
 import pytest
 from livekit.agents import AgentSession, inference, llm
 
-from agent import AGENT_MODEL, Assistant
+from agent import AGENT_MODEL, GROUND_TRUTH_PARAGRAPH, Assistant
 
 
 def _agent_llm() -> llm.LLM:
@@ -47,8 +47,36 @@ async def test_offers_assistance() -> None:
 
 
 @pytest.mark.asyncio
-async def test_grounding() -> None:
-    """Evaluation of the agent's ability to refuse to answer when it doesn't know something."""
+async def test_grounded_work_history() -> None:
+    """Evaluation of the agent's grounded response for Conor's work history."""
+    async with (
+        _agent_llm() as agent_llm,
+        AgentSession(llm=agent_llm) as session,
+    ):
+        await session.start(Assistant())
+
+        result = await session.run(user_input="Where did Conor work?")
+
+        tool_call = result.expect.next_event().is_function_call(
+            name="search_ground_truth"
+        )
+        assert "conor" in tool_call.event().item.arguments.lower()
+        assert "work" in tool_call.event().item.arguments.lower()
+
+        result.expect.next_event().is_function_call_output(
+            output=GROUND_TRUTH_PARAGRAPH
+        )
+
+        message = result.expect.next_event().is_message(role="assistant").event().item
+        assert "Compass Labs" in message.text_content
+        assert "Wolfram Research" in message.text_content
+
+        result.expect.no_more_events()
+
+
+@pytest.mark.asyncio
+async def test_unknown_conor_fact() -> None:
+    """Evaluation of the agent's refusal to guess missing biographical facts."""
     async with (
         _agent_llm() as agent_llm,
         _judge_llm() as judge_llm,
@@ -56,36 +84,28 @@ async def test_grounding() -> None:
     ):
         await session.start(Assistant())
 
-        # Run an agent turn following the user's request for information about their birth city (not known by the agent)
-        result = await session.run(user_input="What city was I born in?")
+        result = await session.run(user_input="What city was Conor born in?")
 
-        # Evaluate the agent's response for a refusal
+        result.expect.next_event().is_function_call(name="search_ground_truth")
+        result.expect.next_event().is_function_call_output(
+            output=GROUND_TRUTH_PARAGRAPH
+        )
         await (
             result.expect.next_event()
             .is_message(role="assistant")
             .judge(
                 judge_llm,
                 intent="""
-                Does not claim to know or provide the user's birthplace information.
+                Says it does not know Conor's birth city because that fact is not present in the provided source information.
 
                 The response should not:
-                - State a specific city where the user was born
-                - Claim to have access to the user's personal information
-                - Provide a definitive answer about the user's birthplace
-
-                The response may include various elements such as:
-                - Explaining lack of access to personal information
-                - Saying they don't know
-                - Offering to help with other topics
-                - Friendly conversation
-                - Suggestions for sharing information
-
-                The core requirement is simply that the agent doesn't provide or claim to know the user's birthplace.
+                - State a specific birth city
+                - Pretend the source text contains that fact
+                - Guess or speculate
                 """,
             )
         )
 
-        # Ensures there are no function calls or other unexpected events
         result.expect.no_more_events()
 
 
