@@ -1,7 +1,13 @@
 import pytest
 from livekit.agents import AgentSession, inference, llm
 
-from agent import AGENT_MODEL, GROUND_TRUTH_PARAGRAPH, Assistant
+from agent import AGENT_MODEL, Assistant
+from grounding import GROUND_TRUTH_PARAGRAPH, SYSTEM_PROMPT
+
+
+def test_system_prompt_loaded() -> None:
+    assert "search_ground_truth" in SYSTEM_PROMPT
+    assert "Do not guess or invent biographical details." in SYSTEM_PROMPT
 
 
 def _agent_llm() -> llm.LLM:

@@ -1,5 +1,4 @@
 import logging
-import re
 
 from dotenv import load_dotenv
 from livekit.agents import (
@@ -8,71 +7,28 @@ from livekit.agents import (
     AgentSession,
     JobContext,
     JobProcess,
-    RunContext,
     cli,
-    function_tool,
     inference,
     room_io,
 )
 from livekit.plugins import ai_coustics, silero
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
+from grounding import SYSTEM_PROMPT, search_ground_truth
+
 logger = logging.getLogger("agent")
 
 load_dotenv(".env.local")
 
 AGENT_MODEL = "openai/gpt-5.3-chat-latest"
-GROUND_TRUTH_PARAGRAPH = (
-    "I'm Conor Cosnett. I worked at Compass Labs as a software engineer, "
-    "previously at Wolfram Research, and I studied applied mathematics and "
-    "applied physics at the University of Galway."
-)
-
-
-def _normalize_words(text: str) -> set[str]:
-    return set(re.findall(r"[a-z0-9]+", text.lower()))
-
-
-GROUND_TRUTH_MATCH_TERMS = _normalize_words(GROUND_TRUTH_PARAGRAPH) | {
-    "background",
-    "career",
-    "education",
-    "job",
-    "jobs",
-    "study",
-    "work",
-}
-ASSISTANT_INSTRUCTIONS = (
-    "You are a helpful voice AI assistant. "
-    "The user is interacting with you via voice, even if you perceive the conversation as text. "
-    "For factual questions about Conor Cosnett, you must call search_ground_truth before answering. "
-    "Use only facts explicitly present in the tool result. "
-    "If the tool returns an empty string or the requested fact is not in the tool result, say you do not know. "
-    "Do not guess or invent biographical details. "
-    "Your responses are concise, to the point, and without complex formatting or punctuation including emojis, asterisks, or other symbols. "
-    "You are curious, friendly, and have a sense of humor."
-)
 
 
 class Assistant(Agent):
     def __init__(self) -> None:
-        super().__init__(instructions=ASSISTANT_INSTRUCTIONS)
-
-    @function_tool()
-    async def search_ground_truth(self, context: RunContext, query: str) -> str:
-        """Search the hard-coded source paragraph for facts about Conor Cosnett.
-
-        Use this before answering factual questions about Conor's background,
-        work history, or education.
-
-        Args:
-            query: The user's factual question about Conor.
-        """
-
-        logger.info("Searching ground truth for query: %s", query)
-        if _normalize_words(query) & GROUND_TRUTH_MATCH_TERMS:
-            return GROUND_TRUTH_PARAGRAPH
-        return ""
+        super().__init__(
+            instructions=SYSTEM_PROMPT,
+            tools=[search_ground_truth],
+        )
 
 
 server = AgentServer()
