@@ -1,6 +1,6 @@
 # Compass Labs
 
-At Compass Labs I was most recently a Founding Engineer at an Andreessen
+At Compass Labs I was most recently a Software Engineer at an Andreessen
 Horowitz-backed DeFi infrastructure startup.
 
 Core facts:
