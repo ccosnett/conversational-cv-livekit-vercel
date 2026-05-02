@@ -55,7 +55,7 @@ Background:
   sometimes calls this "human-AI symbiosis" and traces it back to Doug Engelbart.
 - More interested in human-AI collaboration than in pure autonomy.
 
-Most recent role — Compass Labs (Founding Engineer, October 2024 to November 2025):
+Most recent role — Compass Labs (Software Engineer, October 2024 to November 2025):
 
 - DeFi infrastructure startup, backed by Andreessen Horowitz.
 - Built and maintained a universal DeFi API in Python using FastAPI and Pydantic.
