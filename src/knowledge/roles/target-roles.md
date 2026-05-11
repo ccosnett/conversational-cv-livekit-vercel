@@ -2,6 +2,9 @@
 
 The kind of role I am looking for next is usually some mix of:
 
+- voice AI
+- conversational AI
+- conversational voice agents that people actually talk to
 - applied AI
 - developer tools
 - platform or backend engineering
@@ -19,5 +22,6 @@ Preferred shape:
 Short answer version:
 
 I am mainly interested in clear-scope individual contributor roles across
-applied AI, developer tools, API or SDK engineering, backend or platform work,
-product engineering, and conversational interfaces.
+voice AI, conversational AI, conversational voice agents, applied AI,
+developer tools, API or SDK engineering, backend or platform work, product
+engineering, and conversational interfaces.

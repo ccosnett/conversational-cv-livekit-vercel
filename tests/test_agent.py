@@ -10,6 +10,7 @@ def test_system_prompt_loaded() -> None:
     assert "search_ground_truth" in SYSTEM_PROMPT
     assert "third person" in SYSTEM_PROMPT
     assert "his CV captures" in SYSTEM_PROMPT
+    assert "voice AI" in SYSTEM_PROMPT
 
 
 def _agent_llm() -> llm.LLM:
@@ -107,6 +108,34 @@ async def test_unknown_conor_fact() -> None:
                 """,
             )
         )
+
+        result.expect.no_more_events()
+
+
+@pytest.mark.asyncio
+async def test_grounded_target_roles_voice_ai() -> None:
+    """The talking CV should surface Conor's voice-AI role interest."""
+    async with (
+        _agent_llm() as agent_llm,
+        AgentSession(llm=agent_llm) as session,
+    ):
+        await session.start(Assistant())
+
+        result = await session.run(
+            user_input="What kind of roles is Conor looking for next?"
+        )
+
+        tool_call = result.expect.next_event().is_function_call(
+            name="search_ground_truth"
+        )
+        assert "role" in tool_call.event().item.arguments.lower()
+        result.expect.next_event().is_function_call_output()
+        message = result.expect.next_event().is_message(role="assistant").event().item
+
+        assert "voice" in message.text_content.lower()
+        assert "conversational" in message.text_content.lower()
+        assert "agent" in message.text_content.lower()
+        assert "individual contributor" in message.text_content.lower()
 
         result.expect.no_more_events()
 

@@ -43,10 +43,11 @@ communication, troubleshooting, and customer-facing engineering.
 ## What roles are you looking for?
 
 I am mainly interested in clear-scope individual contributor roles across
-applied AI, developer tools, API or SDK engineering, backend or platform work,
-product engineering, and conversational interfaces. I like AI-native
-engineering cultures and I care a lot about building tools that genuinely
-increase leverage for users.
+voice AI, conversational AI, and conversational voice agents that people
+actually talk to. Beyond that, I am also interested in applied AI, developer
+tools, API or SDK engineering, backend or platform work, and product
+engineering. I like AI-native engineering cultures and I care a lot about
+building tools that genuinely increase leverage for users.
 
 ## What are your strongest technical skills?
 

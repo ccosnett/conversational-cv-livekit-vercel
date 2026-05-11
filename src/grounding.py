@@ -8,9 +8,15 @@ logger = logging.getLogger("agent")
 SYSTEM_PROMPT_PATH = Path(__file__).with_name("system_prompt.txt")
 
 GROUND_TRUTH_PARAGRAPH = (
-    "I'm Conor Cosnett. I worked at Compass Labs as a software engineer, "
-    "previously at Wolfram Research, and I studied applied mathematics and "
-    "applied physics at the University of Galway."
+    "Conor Cosnett is a software engineer based in Ireland. "
+    "He worked at Compass Labs as a software engineer, previously at Wolfram "
+    "Research, and studied applied mathematics and applied physics at the "
+    "University of Galway. For his next role, he is most interested in voice "
+    "AI, conversational AI, and engineering roles building conversational "
+    "voice agents that people actually talk to. He is also interested in "
+    "applied AI, developer tools, API or SDK engineering, backend or platform "
+    "work, and product engineering, especially in clear-scope individual "
+    "contributor roles and AI-native engineering cultures."
 )
 
 
@@ -24,6 +30,14 @@ GROUND_TRUTH_MATCH_TERMS = _normalize_words(GROUND_TRUTH_PARAGRAPH) | {
     "education",
     "job",
     "jobs",
+    "role",
+    "roles",
+    "looking",
+    "interested",
+    "voice",
+    "conversational",
+    "agent",
+    "agents",
     "study",
     "work",
 }
@@ -37,7 +51,7 @@ async def search_ground_truth(context: RunContext, query: str) -> str:
     """Search the hard-coded source paragraph for facts about Conor Cosnett.
 
     Use this before answering factual questions about Conor's background,
-    work history, or education.
+    work history, education, or the roles he is looking for next.
 
     Args:
         query: The user's factual question about Conor.
